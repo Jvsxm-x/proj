@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Service Page</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.0.3/dist/tailwind.min.css">
+</head>
+<body class="bg-gray-100">
+    <!-- Include Navbar -->
+    <%- include('./navbar', { isAuthenticated: isAuthenticated }) %>
+
+    <div class="container mx-auto p-4">
+        <h1 class="text-3xl font-bold mb-4 text-center">Bienvenue sur notre page des services</h1>
+        <p class="text-lg mb-4 text-center">Découvrez les services innovants que nous offrons pour gérer efficacement vos tâches, vos projets et votre équipe.</p>
+
+        <!-- Services Content -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            
+            <!-- Service 1 -->
+            <div class="service bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition duration-300">
+                <h2 class="text-xl font-semibold mb-3">Gestion de Tâches</h2>
+                <p class="mb-3">Assignez et suivez vos tâches en toute simplicité. Créez des tâches avec des priorités, des échéances, et suivez leur progression en temps réel.</p>
+                <ul class="list-disc pl-5">
+                    <li>Création de tâches personnalisées</li>
+                    <li>Assignation à des utilisateurs</li>
+                    <li>Suivi des statuts de tâches (À faire, En cours, Terminé)</li>
+                </ul>
+            </div>
+
+            <!-- Service 2 -->
+            <div class="service bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition duration-300">
+                <h2 class="text-xl font-semibold mb-3">Gestion de Projets</h2>
+                <p class="mb-3">Suivez l’avancement de vos projets et atteignez vos objectifs. Organisez vos tâches par projets et attribuez des priorités claires à chaque étape.</p>
+                <ul class="list-disc pl-5">
+                    <li>Organisation par projets</li>
+                    <li>Tableaux de bord interactifs</li>
+                    <li>Suivi en temps réel des projets</li>
+                </ul>
+            </div>
+
+            <!-- Service 3 -->
+            <div class="service bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition duration-300">
+                <h2 class="text-xl font-semibold mb-3">Collaboration d'Équipe</h2>
+                <p class="mb-3">Facilitez la collaboration entre les membres de votre équipe avec des outils de communication intégrés et un partage de fichiers en temps réel.</p>
+                <ul class="list-disc pl-5">
+                    <li>Chat en temps réel</li>
+                    <li>Partage de documents et fichiers</li>
+                    <li>Assignation de commentaires et retours sur les tâches</li>
+                </ul>
+            </div>
+
+            <!-- Service 4 -->
+            <div class="service bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition duration-300">
+                <h2 class="text-xl font-semibold mb-3">Analyse des Performances</h2>
+                <p class="mb-3">Suivez les performances de votre équipe grâce à des statistiques et des rapports détaillés sur l'avancement des tâches et projets.</p>
+                <ul class="list-disc pl-5">
+                    <li>Rapports de productivité</li>
+                    <li>Visualisation des progrès</li>
+                    <li>Suivi des objectifs de l’équipe</li>
+                </ul>
+            </div>
+
+            <!-- Service 5 -->
+            <div class="service bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition duration-300">
+                <h2 class="text-xl font-semibold mb-3">Notifications et Alertes</h2>
+                <p class="mb-3">Recevez des notifications instantanées lorsqu'une tâche est mise à jour, commentée, ou modifiée pour rester informé en temps réel.</p>
+                <ul class="list-disc pl-5">
+                    <li>Notifications par email et mobile</li>
+                    <li>Alertes sur les changements de statut de tâches</li>
+                    <li>Notifications personnalisées</li>
+                </ul>
+            </div>
+
+            <!-- Service 6 -->
+            <div class="service bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition duration-300">
+                <h2 class="text-xl font-semibold mb-3">Automatisation des Tâches</h2>
+                <p class="mb-3">Automatisez les processus répétitifs pour gagner du temps et améliorer l’efficacité de votre équipe. Créez des workflows automatiques pour vos tâches courantes.</p>
+                <ul class="list-disc pl-5">
+                    <li>Création de workflows automatiques</li>
+                    <li>Intégrations avec d’autres outils</li>
+                    <li>Automatisation des tâches de suivi et de rappel</li>
+                </ul>
+            </div>
+
+        </div>
+    </div>
+
+</body>
+</html>

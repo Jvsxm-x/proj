@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tableau des Tâches</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+
+</head>
+<body class="bg-gray-100">
+    <%- include('../partials/navbar') %>
+
+    <div class="container mx-auto p-4">
+        <h1 class="text-2xl font-bold mb-4">Tableau des Tâches</h1>
+        <!-- <button onclick="openTaskForm()" class="mb-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+            + Nouvelle Tâche
+        </button> -->
+        <div class="grid grid-cols-4 gap-4">
+            <!-- No Effective Tasks Column -->
+            <div class="bg-white p-4 rounded-lg shadow-md">
+                <h2 class="text-xl font-bold mb-2">Tâches Non-Efficaces</h2>
+                <div id="no-effective-tasks" class="task-list min-h-[200px] p-2 bg-gray-200 rounded">
+                    <% noteffecttask.forEach(task => {   %>
+                        <div class="task bg-white p-2 my-2 shadow-md rounded cursor-pointer" data-id="<%= task._id %>"
+                            data-titre="<%= task.titre %>"
+                            data-description="<%= task.description %>"
+                            data-statut="<%= task.statut %>"
+                            data-dateCreation="<%= task.dateCreation %>"
+                            data-utilisateur="<%= task.utilisateur ? task.utilisateur.nom : 'Inconnu' %>">
+                            <strong><%= task.titre %> <%= task.description %></strong>
+                        </div>
+                    <% } ); %>
+                    <% tasks.forEach(task => { if (task.statut === "NON_EFFECTIF") { %>
+                        <div class="task bg-white p-2 my-2 shadow-md rounded cursor-pointer" data-id="<%= task._id %>"
+                            data-titre="<%= task.titre %>"
+                            data-description="<%= task.description %>"
+                            data-statut="<%= task.statut %>"
+                            data-dateCreation="<%= task.dateCreation %>"
+                            data-utilisateur="<%= task.utilisateur ? task.utilisateur.nom : 'Inconnu' %>">
+                            <strong><%= task.titre %> <%= task.description %></strong>
+                        </div>
+                    <% } }); %>
+                </div>
+            </div>
+
+            <!-- EN_COURS Column -->
+            <div class="bg-white p-4 rounded-lg shadow-md">
+                <h2 class="text-xl font-bold mb-2">EN_COURS</h2>
+                <div id="en_cours" class="task-list min-h-[200px] p-2 bg-gray-200 rounded">
+                    <% tasks.forEach(task => { if (task.statut === "EN_COURS") { %>
+                        <div class="task bg-white p-2 my-2 shadow-md rounded cursor-pointer" data-id="<%= task._id %>"
+                            data-titre="<%= task.titre %>"
+                            data-description="<%= task.description %>"
+                            data-statut="<%= task.statut %>"
+                            data-dateCreation="<%= task.dateCreation %>"
+                            data-utilisateur="<%= task.utilisateur ? task.utilisateur.nom : 'Inconnu' %>">
+                            <strong><%= task.titre %> <%= task.description %></strong>
+                        </div>
+                    <% } }); %>
+                </div>
+            </div>
+
+            <!-- TERMINE Column -->
+            <div class="bg-white p-4 rounded-lg shadow-md">
+                <h2 class="text-xl font-bold mb-2">TERMINE</h2>
+                <div id="termine" class="task-list min-h-[200px] p-2 bg-gray-200 rounded">
+                    <% tasks.forEach(task => { if (task.statut === "TERMINE") { %>
+                        <div class="task bg-white p-2 my-2 shadow-md rounded cursor-pointer" data-id="<%= task._id %>"
+     data-titre="<%= task.titre %>"
+     data-description="<%= task.description %>"
+     data-statut="<%= task.statut %>"
+     data-dateCreation="<%= task.dateCreation %>"
+     data-utilisateur="<%= task.utilisateur ? task.utilisateur.nom : 'Inconnu' %>">
+                            <strong><%= task.titre %> <%= task.description %></strong>
+                        </div>
+                    <% } }); %>
+                </div>
+            </div>
+
+            <!-- ANNULE Column -->
+            <div class="bg-white p-4 rounded-lg shadow-md">
+                <h2 class="text-xl font-bold mb-2">ANNULE</h2>
+                <div id="annule" class="task-list min-h-[200px] p-2 bg-gray-200 rounded">
+                    <% tasks.forEach(task => { if (task.statut === "ANNULE") { %>
+                        <div class="task bg-white p-2 my-2 shadow-md rounded cursor-pointer" data-id="<%= task._id %>"
+     data-titre="<%= task.titre %>"
+     data-description="<%= task.description %>"
+     data-statut="<%= task.statut %>"
+     data-dateCreation="<%= task.dateCreation %>"
+     data-utilisateur="<%= task.utilisateur ? task.utilisateur.nom : 'Inconnu' %>">
+                            <strong><%= task.titre %> <%= task.description %></strong>
+                        </div>
+                    <% } }); %>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Trash Bin for Deleting Tasks -->
+    <div id="trash-bin" class="fixed bottom-4 right-4 bg-red-600 text-white p-4 rounded-full shadow-lg cursor-pointer">
+        🗑️
+    </div>
+
+    <!-- Popup Modal -->
+    <div id="task-modal" class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 hidden">
+        <div class="bg-white p-6 rounded-lg shadow-lg w-96">
+            <h2 id="modal-title" class="text-xl font-bold mb-2"></h2>
+            <p id="modal-description" class="text-gray-700"></p>
+            <p id="modal-statut" class="text-gray-700"></p>
+            <p id="modal-dateCreation" class="text-gray-700"></p>
+            <p id="modal-utilisateur" class="text-gray-700"></p>
+
+            <button onclick="closeModal()" class="mt-4 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">Fermer</button>
+        </div>
+    </div>
+
+    <script>
+          function closeModal() {
+            document.getElementById("task-modal").classList.add("hidden");
+        }
+        // Initialize SortableJS for each column
+        ["en_cours", "termine", "annule", "no-effective-tasks"].forEach(status => {
+            new Sortable(document.getElementById(status), {
+                group: "tasks",
+                animation: 150,
+                onEnd: async (evt) => {
+                    const taskId = evt.item.getAttribute("data-id");
+                    const newStatus = evt.to.id === "en_cours" ? "EN_COURS" : 
+                                      evt.to.id === "termine" ? "TERMINE" : 
+                                      evt.to.id === "annule" ? "ANNULE" : "NON_EFFECTIF";
+
+                    // Send request to update task status
+                    await fetch(`/tasks/update/${taskId}`, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ statut: newStatus })
+                    });
+                }
+            });
+        });
+        document.addEventListener("dblclick", function (e) {
+         
+         if (e.target.classList.contains("task")) {
+             document.getElementById("modal-title").innerText = e.target.getAttribute("data-titre");
+             document.getElementById("modal-description").innerText = "Description: " + e.target.getAttribute("data-description");
+             document.getElementById("modal-utilisateur").innerText = "username: " + e.target.getAttribute("data-utilisateur");
+             document.getElementById("modal-statut").innerText = "statut: " + e.target.getAttribute("data-statut");
+
+
+             document.getElementById("task-modal").classList.remove("hidden");
+         }
+     });
+        // Trash Bin for deleting tasks
+        new Sortable(document.getElementById("trash-bin"), {
+            group: "tasks",
+            onAdd: async (evt) => {
+                const taskId = evt.item.getAttribute("data-id");
+                const response = await fetch(`/tasks/delete/${taskId}`, { method: "POST" });
+
+                if (!response.ok) {
+                    alert("Erreur lors de la suppression de la tâche.");
+                }
+            }
+        });
+
+    const socket = io("ws://localhost:3000"); // Connect to WebSocket server
+ // Send logged-in user ID to WebSocket server
+ socket.emit("registerUser", "<%= user.id %>");
+
+// Receive real-time notifications
+socket.on("user-notification", (data) => {
+    console.log("📢 Notification reçue :", data.message);
+    alert(data.message); // Replace with a custom UI
+});
+  
+    socket.on("notification", (data) => {
+    console.log("📢 Notification received:", data.message);
+    alert(data.message); // Replace with UI notification if needed
+});
+
+
+    </script>
+
+</body>
+</html>

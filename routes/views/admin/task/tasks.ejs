@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tableau des Tâches</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .fade-in {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <%- include('../../admin/partials/navbar') %>
+
+    <div class="container mx-auto p-4">
+        <h1 class="text-2xl font-bold mb-4">Tableau des Tâches</h1>
+        <button onclick="openTaskForm()" class="mb-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+            + Nouvelle Tâche
+        </button>
+
+        <div class="grid grid-cols-3 gap-4">
+            <div class="bg-white p-4 rounded-lg shadow-md">
+                <h2 class="text-xl font-bold mb-2">Tâches Non-Efficaces</h2>
+                <div id="no-effective-tasks" class="task-list min-h-[200px] p-2 bg-gray-200 rounded">
+                    <% if (noteffecttask.length === 0) { %>
+                        <p id="empty-message" class="text-gray-500 italic">Aucune tâche disponible</p>
+                    <% } %>
+                    <% noteffecttask.forEach(task => { %>
+                        <div class="task bg-white p-2 my-2 shadow-md rounded cursor-pointer "
+                             data-id="<%= task._id %>"
+                             data-titre="<%= task.titre %>"
+                             data-description="<%= task.description %>"
+                             data-statut="<%= task.statut %>"
+                             data-dateCreation="<%= task.dateCreation %>"
+                             data-utilisateur="<%= task.utilisateur ? task.utilisateur.nom : 'Inconnu' %>">
+                            <strong><%= task.titre %> <%= task.description %></strong>
+                        </div>
+                    <% }); %>
+                </div>
+            </div>
+        
+            <div class="bg-white p-4 rounded-lg shadow-md">
+                <h2 class="text-xl font-bold mb-2">Tâches Efficaces</h2>
+                <div id="effective-tasks" class="task-list min-h-[200px] p-2 bg-gray-200 rounded">
+                    <% if (tasks.length === 0) { %>
+                        <p id="empty-message" class="text-gray-500 italic">Aucune tâche disponible</p>
+                    <% } %>
+                    <% tasks.forEach(taski => { %>
+                        <div class="tasks bg-white p-2 my-2 shadow-md rounded cursor-pointer "
+                             data-id="<%= taski._id %>"
+                             data-titre="<%= taski.titre %>"
+                             data-description="<%= taski.description %>"
+                             data-statut="<%= taski.statut %>"
+                             data-dateCreation="<%= taski.dateCreation %>"
+                             data-utilisateur="<%= taski.utilisateur ? taski.utilisateur.nom : 'Inconnu' %>">
+                            <strong><%= taski.titre %> <%= taski.description %></strong>
+                        </div>
+                    <% }); %>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Corbeille -->
+    <div id="trash-bin" class="fixed bottom-4 right-4 bg-red-600 text-white p-4 rounded-full shadow-lg cursor-pointer">
+        🗑️
+    </div>
+
+    <!-- Modal Affichage Détails -->
+    <div id="task-modal" class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 hidden">
+        <div class="bg-white p-6 rounded-lg shadow-lg w-96">
+            <h2 id="modal-title" class="text-xl font-bold mb-2"></h2>
+            <p id="modal-description" class="text-gray-700"></p>
+            <p id="modal-statut" class="text-gray-700"></p>
+            <p id="modal-dateCreation" class="text-gray-700"></p>
+            <p id="modal-utilisateur" class="text-gray-700"></p>
+            <button onclick="closeModal()" class="mt-4 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">Fermer</button>
+        </div>
+    </div>
+
+    <!-- Modal Création Tâche -->
+    <div id="task-form-modal" class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 hidden">
+        <div class="bg-white p-6 rounded-lg shadow-lg w-96">
+            <h2 class="text-xl font-bold mb-4">Créer une nouvelle tâche</h2>
+            <form id="task-form">
+                <input type="text" id="task-title" placeholder="Titre" class="w-full p-2 border rounded mb-2" required>
+                <textarea id="task-desc" placeholder="Description" class="w-full p-2 border rounded mb-2"></textarea>
+                <button type="submit" class="w-full bg-green-500 text-white py-2 rounded hover:bg-green-600">
+                    Ajouter
+                </button>
+            </form>
+            <button onclick="closeTaskForm()" class="mt-4 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">Fermer</button>
+        </div>
+    </div>
+
+    <script>
+        function openTaskForm() {
+            document.getElementById("task-form-modal").classList.remove("hidden");
+        }
+
+        function closeTaskForm() {
+            document.getElementById("task-form-modal").classList.add("hidden");
+        }
+
+        function closeModal() {
+            document.getElementById("task-modal").classList.add("hidden");
+        }
+
+        document.getElementById("task-form").addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const title = document.getElementById("task-title").value;
+            const description = document.getElementById("task-desc").value;
+
+            const response = await fetch(`/admin.faces/tasks/create`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ titre: title, description })
+            });
+
+            if (response.ok) {
+                const task = await response.json();
+                const taskList = document.getElementById("no-effective-tasks");
+                document.getElementById("empty-message")?.remove(); // Supprime le message si présent
+
+                const newTaskElement = document.createElement("div");
+                newTaskElement.className = "task bg-white p-2 my-2 shadow-md rounded cursor-pointer fade-in";
+                newTaskElement.setAttribute("data-id", task._id);
+                newTaskElement.setAttribute("data-titre", task.titre);
+                newTaskElement.setAttribute("data-description", task.description);
+                newTaskElement.innerHTML = `<strong>${task.titre} ${task.description}</strong>`;
+
+                taskList.appendChild(newTaskElement);
+                closeTaskForm();
+            } else {
+                alert("Erreur lors de la création de la tâche");
+            }
+        });
+
+        document.addEventListener("dblclick", function (e) {
+            if (e.target.classList.contains("task")) {
+                document.getElementById("modal-title").innerText = e.target.getAttribute("data-titre");
+                document.getElementById("modal-description").innerText = "Description: " + e.target.getAttribute("data-description");
+                document.getElementById("modal-utilisateur").innerText = "username: " + e.target.getAttribute("data-utilisateur");
+
+                document.getElementById("task-modal").classList.remove("hidden");
+            }
+            
+        });
+        document.addEventListener("dblclick", function (e) {
+         
+            if (e.target.classList.contains("tasks")) {
+                document.getElementById("modal-title").innerText = e.target.getAttribute("data-titre");
+                document.getElementById("modal-description").innerText = "Description: " + e.target.getAttribute("data-description");
+                document.getElementById("modal-utilisateur").innerText = "username: " + e.target.getAttribute("data-utilisateur");
+                document.getElementById("modal-statut").innerText = "statut: " + e.target.getAttribute("data-statut");
+
+
+                document.getElementById("task-modal").classList.remove("hidden");
+            }
+        });
+        new Sortable(document.getElementById("trash-bin"), {
+            group: "task",
+            animation: 150,
+
+            onAdd: async (evt) => {
+                const taskId = evt.item.getAttribute("data-id");
+
+                if (!confirm("Voulez-vous vraiment supprimer cette tâche ?")) {
+                    document.getElementById("no-effective-tasks").appendChild(evt.item);
+                    return;
+                }
+
+                evt.item.remove();
+
+                const response = await fetch(`/admin.faces/tasks/delete/${taskId}`, { method: "DELETE" });
+
+                if (!response.ok) {
+                    alert("Erreur lors de la suppression de la tâche.");
+                }
+            }
+        });
+        [ "no-effective-tasks"].forEach(id => {
+            new Sortable(document.getElementById(id), {
+                group: "task",
+                animation: 150,
+                onEnd: async (evt) => {
+                    const taskId = evt.item.getAttribute("data-id");
+                    const newStatus = evt.to.id === "en_cours" ? "EN_COURS" : 
+                                      evt.to.id === "termine" ? "TERMINE" : 
+                                      evt.to.id === "annule" ? "ANNULE" : "NON_EFFECTIF";
+
+                
+                }
+            });
+        });
+    </script>
+</body>
+</html>

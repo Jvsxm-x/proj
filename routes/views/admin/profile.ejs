@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil Utilisateur</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 text-gray-900">
+    
+    <!-- ✅ Navbar -->
+    <%- include('../admin/partials/navbar') %>
+
+    <!-- ✅ Main Content -->
+    <main class="pt-24">
+        <section class="container mx-auto my-12 px-6">
+            <h2 class="text-3xl font-bold text-center">👤 Profil de l'utilisateur</h2>
+
+            <div class="max-w-3xl mx-auto bg-white p-8 rounded-lg shadow-lg mt-8">
+                <div class="flex flex-col items-center text-center">
+                    <!-- ✅ Image de profil -->
+                    <img src="https://www.gravatar.com/avatar/2c7d99fe281ecd3bcd65ab915bac6dd5?s=250" alt="Photo de profil" class="w-32 h-32 rounded-full shadow-md mb-4">
+
+                    <!-- ✅ Informations Utilisateur -->
+                    <h3 class="text-2xl font-semibold mb-2">Bonjour, <%= user.nom %> 👋</h3>
+                    <p class="text-gray-700"><strong>Email :</strong> <%= user.email %></p>
+                    <p class="text-gray-700"><strong>Date d'inscription :</strong> <%= user.dateInscription %></p>
+
+                    <!-- ✅ Bouton Modifier Profil -->
+                    <a href="/admin.faces/update-profile" 
+                       class="mt-6 inline-block bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg shadow-md transition">
+                        ✏️ Modifier le Profil
+                    </a>
+                </div>
+            </div>
+
+            <!-- ✅ Bouton de Déconnexion -->
+            <div class="mt-8 text-center">
+                <a href="/admin.faces/logout" 
+                   class="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg shadow-md transition">
+                    🚪 Se Déconnecter
+                </a>
+            </div>
+        </section>
+    </main>
+
+</body>
+</html>

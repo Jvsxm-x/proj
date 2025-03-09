@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des Tâches</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 text-gray-900">
+
+    <!-- ✅ Navbar -->
+  
+    <%- include('../admin/partials/navbar') %>
+
+    <!-- ✅ Hero Section -->
+    <header class="bg-blue-500 text-white text-center py-20">
+        <h1 class="text-4xl font-bold">Simplifiez votre gestion des tâches</h1>
+        <p class="mt-4 text-lg">Organisez, planifiez et suivez vos tâches en toute simplicité.</p>
+        <a href="/admin.faces/register" class="mt-6 inline-block bg-white text-blue-600 px-6 py-3 rounded-lg shadow-lg font-semibold">Commencer maintenant</a>
+    </header>
+
+    <!-- ✅ Services Section -->
+    <section class="container mx-auto my-12 px-6">
+        <h2 class="text-3xl font-bold text-center">Nos Services</h2>
+        <div class="grid md:grid-cols-3 gap-8 mt-8">
+            
+            <!-- Service 1 -->
+            <div class="bg-white p-6 rounded-lg shadow-lg text-center">
+                <h3 class="text-xl font-semibold">Gestion de Tâches</h3>
+                <p class="mt-2 text-gray-700">Créez, organisez et suivez vos tâches facilement.</p>
+            </div>
+
+            <!-- Service 2 -->
+            <div class="bg-white p-6 rounded-lg shadow-lg text-center">
+                <h3 class="text-xl font-semibold">Collaboration</h3>
+                <p class="mt-2 text-gray-700">Travaillez en équipe et partagez vos tâches en temps réel.</p>
+            </div>
+
+            <!-- Service 3 -->
+            <div class="bg-white p-6 rounded-lg shadow-lg text-center">
+                <h3 class="text-xl font-semibold">Notifications</h3>
+                <p class="mt-2 text-gray-700">Recevez des rappels pour ne jamais manquer une échéance.</p>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ✅ Footer -->
+    <footer class="bg-gray-800 text-white py-6 text-center">
+        <p>&copy; 2025 Gestion des Tâches. Tous droits réservés.</p>
+    </footer>
+
+</body>
+</html>

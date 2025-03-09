@@ -1,0 +1,19 @@
+<nav class="bg-blue-600 text-white py-4">
+    <div class="container mx-auto flex justify-between items-center px-6">
+        <a href="/" class="text-2xl font-bold">Task Manager</a>
+        <ul class="flex space-x-6">
+            <li><a href="/" class="hover:text-gray-300">Accueil</a></li>
+            <li><a href="/services" class="hover:text-gray-300">Services</a></li>
+            
+            <!-- Conditionally render links based on authentication -->
+            <% if (isAuthenticated) { %>
+                <li><a href="/dashboard" class="hover:text-gray-300">Dashboard</a></li>
+                <li><a href="/tasks" class="hover:text-gray-300">Tâches</a></li>
+                <li><a href="/logout" class="hover:text-gray-300">Déconnexion</a></li>
+            <% } else { %>
+                <li><a href="/login" class="hover:text-gray-300">Connexion</a></li>
+                <li><a href="/register" class="hover:text-gray-300">Inscription</a></li>
+            <% } %>
+        </ul>
+    </div>
+</nav>

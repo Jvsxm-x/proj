@@ -6,7 +6,8 @@ const UserSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
   motDePasse: { type: String, required: true },
   dateInscription: { type: Date, default: Date.now },
-  roles: { type: [String], default: ["utilisateur"] }
+  roles: { type: [String], default: ["utilisateur"] },
+  vrifier :{type :[Boolean],default:["false"]}
 });
 
 UserSchema.pre("save", async function (next) {
@@ -15,5 +16,6 @@ UserSchema.pre("save", async function (next) {
   this.motDePasse = await bcrypt.hash(this.motDePasse, salt);
   next();
 });
+
 
 module.exports = mongoose.model("User", UserSchema);
